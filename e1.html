@@ -1,0 +1,424 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PerformX System</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f4f4;
+}
+
+header{
+    background:#6a0dad;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    padding:30px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:scale(1.05);
+}
+
+.card h2{
+    color:#6a0dad;
+}
+
+#module{
+    width:90%;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.2);
+    margin-bottom:20px;
+}
+
+input,select{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+}
+
+button{
+    padding:10px 15px;
+    background:#6a0dad;
+    color:white;
+    border:none;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+table,th,td{
+    border:1px solid #ddd;
+}
+
+th{
+    background:#6a0dad;
+    color:white;
+}
+
+th,td{
+    padding:10px;
+    text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>PerformX - Employee Performance & Rewards System</h1>
+</header>
+
+<div class="dashboard">
+
+<div class="card" onclick="employeeModule()">
+<h2>👨 Employee</h2>
+<p>Manage Employees</p>
+</div>
+
+<div class="card" onclick="attendanceModule()">
+<h2>📅 Attendance</h2>
+<p>Track Attendance</p>
+</div>
+
+<div class="card" onclick="performanceModule()">
+<h2>📈 Performance</h2>
+<p>Performance Evaluation</p>
+</div>
+
+<div class="card" onclick="rewardModule()">
+<h2>🏆 Rewards</h2>
+<p>Assign Rewards</p>
+</div>
+
+</div>
+
+<div id="module"></div>
+
+<script>
+
+// Arrays
+let employees=[];
+let attendanceRecords=[];
+let performanceRecords=[];
+let rewardRecords=[];
+
+// Employee Module
+function employeeModule(){
+
+document.getElementById("module").innerHTML=`
+
+<h2>Employee Registration</h2>
+
+<input id="empId" placeholder="Employee ID">
+
+<input id="empName" placeholder="Employee Name">
+
+<select id="empDept">
+<option>HR</option>
+<option>IT</option>
+<option>Finance</option>
+<option>Marketing</option>
+<option>Operations</option>
+</select>
+
+<button onclick="saveEmployee()">
+Save Employee
+</button>
+
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Department</th>
+</tr>
+</thead>
+
+<tbody id="employeeTable"></tbody>
+</table>
+`;
+
+displayEmployees();
+}
+
+function saveEmployee(){
+
+let id=document.getElementById("empId").value;
+let name=document.getElementById("empName").value;
+let dept=document.getElementById("empDept").value;
+
+if(id==="" || name===""){
+alert("Enter details");
+return;
+}
+
+employees.push({
+id,name,dept
+});
+
+displayEmployees();
+
+document.getElementById("empId").value="";
+document.getElementById("empName").value="";
+}
+
+function displayEmployees(){
+
+let table=document.getElementById("employeeTable");
+
+if(!table) return;
+
+table.innerHTML="";
+
+employees.forEach(emp=>{
+
+table.innerHTML+=`
+<tr>
+<td>${emp.id}</td>
+<td>${emp.name}</td>
+<td>${emp.dept}</td>
+</tr>
+`;
+});
+}
+
+// Attendance Module
+
+function attendanceModule(){
+
+document.getElementById("module").innerHTML=`
+
+<h2>Attendance Module</h2>
+
+<input id="attEmpId" placeholder="Employee ID">
+
+<input id="attendance" placeholder="Attendance %">
+
+<button onclick="saveAttendance()">
+Save Attendance
+</button>
+
+<table>
+<thead>
+<tr>
+<th>Employee ID</th>
+<th>Attendance %</th>
+</tr>
+</thead>
+
+<tbody id="attendanceTable"></tbody>
+</table>
+`;
+
+displayAttendance();
+}
+
+function saveAttendance(){
+
+let id=document.getElementById("attEmpId").value;
+let attendance=document.getElementById("attendance").value;
+
+attendanceRecords.push({
+id,attendance
+});
+
+displayAttendance();
+}
+
+function displayAttendance(){
+
+let table=document.getElementById("attendanceTable");
+
+if(!table) return;
+
+table.innerHTML="";
+
+attendanceRecords.forEach(rec=>{
+
+table.innerHTML+=`
+<tr>
+<td>${rec.id}</td>
+<td>${rec.attendance}%</td>
+</tr>
+`;
+});
+}
+
+// Performance Module
+
+function performanceModule(){
+
+document.getElementById("module").innerHTML=`
+
+<h2>Performance Module</h2>
+
+<input id="perfEmpId" placeholder="Employee ID">
+
+<input id="score" placeholder="Performance Score">
+
+<button onclick="savePerformance()">
+Evaluate
+</button>
+
+<table>
+<thead>
+<tr>
+<th>Employee ID</th>
+<th>Score</th>
+<th>Grade</th>
+</tr>
+</thead>
+
+<tbody id="performanceTable"></tbody>
+</table>
+`;
+
+displayPerformance();
+}
+
+function savePerformance(){
+
+let id=document.getElementById("perfEmpId").value;
+let score=parseInt(
+document.getElementById("score").value
+);
+
+let grade="D";
+
+if(score>=90)
+grade="A+";
+else if(score>=80)
+grade="A";
+else if(score>=70)
+grade="B";
+else if(score>=60)
+grade="C";
+
+performanceRecords.push({
+id,score,grade
+});
+
+displayPerformance();
+}
+
+function displayPerformance(){
+
+let table=document.getElementById("performanceTable");
+
+if(!table) return;
+
+table.innerHTML="";
+
+performanceRecords.forEach(rec=>{
+
+table.innerHTML+=`
+<tr>
+<td>${rec.id}</td>
+<td>${rec.score}</td>
+<td>${rec.grade}</td>
+</tr>
+`;
+});
+}
+
+// Reward Module
+
+function rewardModule(){
+
+document.getElementById("module").innerHTML=`
+
+<h2>Reward Module</h2>
+
+<input id="rewardEmpId"
+placeholder="Employee ID">
+
+<select id="rewardType">
+<option>Gold</option>
+<option>Silver</option>
+<option>Bronze</option>
+</select>
+
+<button onclick="saveReward()">
+Assign Reward
+</button>
+
+<table>
+<thead>
+<tr>
+<th>Employee ID</th>
+<th>Reward</th>
+</tr>
+</thead>
+
+<tbody id="rewardTable"></tbody>
+</table>
+`;
+
+displayRewards();
+}
+
+function saveReward(){
+
+let id=document.getElementById("rewardEmpId").value;
+
+let reward=
+document.getElementById("rewardType").value;
+
+rewardRecords.push({
+id,reward
+});
+
+displayRewards();
+}
+
+function displayRewards(){
+
+let table=document.getElementById("rewardTable");
+
+if(!table) return;
+
+table.innerHTML="";
+
+rewardRecords.forEach(rec=>{
+
+table.innerHTML+=`
+<tr>
+<td>${rec.id}</td>
+<td>${rec.reward}</td>
+</tr>
+`;
+});
+}
+
+</script>
+
+</body>
+</html>
